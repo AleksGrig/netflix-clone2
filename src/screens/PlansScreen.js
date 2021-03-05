@@ -8,23 +8,23 @@ import { loadStripe } from '@stripe/stripe-js'
 function PlansScreen() {
   const [products, setProducts] = useState([])
   const user = useSelector(selectUser)
-  const [subscription, setSubscription] = useState(null)
+  // const [subscription, setSubscription] = useState(null)
 
-  useEffect(() => {
-    db.collection('customers')
-      .doc(user.uid)
-      .collection('subscriptions')
-      .get()
-      .then(querySnapshot => {
-        querySnapshot.forEach(async subscription => {
-          setSubscription({
-            role: subscription.data().role,
-            current_period_end: subscription.data().current_period_end.seconds,
-            current_period_start: subscription.data().current_period_start.seconds,
-          })
-        })
-      })
-  }, [user.uid])
+  // useEffect(() => {
+  //   db.collection('customers')
+  //     .doc(user.uid)
+  //     .collection('subscriptions')
+  //     .get()
+  //     .then(querySnapshot => {
+  //       querySnapshot.forEach(async subscription => {
+  //         setSubscription({
+  //           role: subscription.data().role,
+  //           current_period_end: subscription.data().current_period_end.seconds,
+  //           current_period_start: subscription.data().current_period_start.seconds,
+  //         })
+  //       })
+  //     })
+  // }, [user.uid])
 
   useEffect(() => {
     db.collection("products")
@@ -74,15 +74,15 @@ function PlansScreen() {
 
   return (
     <div className="plansScreen">
-      {subscription && (
+      {user.role && (
         <p className="plansScreen__renewal">
-          Renewal Date: {new Date(subscription?.current_period_end * 1000).toLocaleDateString()}
+          Renewal Date: {new Date(user.current_period_end * 1000).toLocaleDateString()}
         </p>
       )}
       {Object.entries(products).map(([productId, productData]) => {
         // TODO: add some check if the user's subscription is active
         const isCurrentPackage = productData.name?.toLowerCase()
-          .includes(subscription?.role)
+          .includes(user?.role)
         return (
           <div
             key={productId}

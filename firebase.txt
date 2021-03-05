@@ -1,0 +1,13 @@
+import firebase from 'firebase'
+
+const firebaseConfig = {
+  See config here
+  https://console.firebase.google.com/project/netflixe-clone2/settings/general/web:YTBmZDQxZjQtYjA4Ny00YmFiLWIzYzQtZWEyNGVlOTg2ZDAz?consoleUI=FIREBASE
+};
+
+const firebaseApp = firebase.initializeApp(firebaseConfig)
+const db = firebaseApp.firestore()
+const auth = firebase.auth()
+
+export { auth }
+export default db
