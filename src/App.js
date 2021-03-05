@@ -45,7 +45,7 @@ function App() {
     return () => {
       unsubscribe()
     }
-  }, [dispatch])
+  }, [])
 
   console.log(user)
 
