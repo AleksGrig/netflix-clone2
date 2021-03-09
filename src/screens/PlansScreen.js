@@ -4,46 +4,14 @@ import { selectUser } from '../features/userSlice'
 import db from '../firebase'
 import './PlansScreen.css'
 import { loadStripe } from '@stripe/stripe-js'
+import { initializeProducts } from '../utils'
 
 function PlansScreen() {
   const [products, setProducts] = useState([])
   const user = useSelector(selectUser)
-  // const [subscription, setSubscription] = useState(null)
-
-  // useEffect(() => {
-  //   db.collection('customers')
-  //     .doc(user.uid)
-  //     .collection('subscriptions')
-  //     .get()
-  //     .then(querySnapshot => {
-  //       querySnapshot.forEach(async subscription => {
-  //         setSubscription({
-  //           role: subscription.data().role,
-  //           current_period_end: subscription.data().current_period_end.seconds,
-  //           current_period_start: subscription.data().current_period_start.seconds,
-  //         })
-  //       })
-  //     })
-  // }, [user.uid])
 
   useEffect(() => {
-    db.collection("products")
-      .where("active", "==", true)
-      .get()
-      .then(querySnapshot => {
-        const products = {}
-        querySnapshot.forEach(async (productDoc) => {
-          products[productDoc.id] = productDoc.data()
-          const priceSnap = await productDoc.ref.collection("prices").get()
-          priceSnap.docs.forEach(price => {
-            products[productDoc.id].prices = {
-              priceId: price.id,
-              priceData: price.data()
-            }
-          })
-        })
-        setProducts(products)
-      })
+    initializeProducts(setProducts)
   }, [])
 
   const loadCheckout = async (priceId) => {
@@ -99,7 +67,6 @@ function PlansScreen() {
           </div>
         )
       })}
-
     </div>
   )
 }
