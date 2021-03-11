@@ -36,7 +36,7 @@ function SignupScreen({ email }) {
     <div className="signupScreen">
       <form>
         <h1>Sign In</h1>
-        <input ref={emailRef} placeholder={!email && "Email"} value={email && email} type="email" />
+        <input ref={emailRef} placeholder={email ? email : "Email"} type="email" />
         <input ref={passwordRef} placeholder="Password" type="password" />
         <button type="submit" onClick={signin}>Sign In</button>
         <h4>

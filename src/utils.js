@@ -1,5 +1,32 @@
+import { loadStripe } from "@stripe/stripe-js"
 import { login, logout } from "./features/userSlice"
 import db from "./firebase"
+
+export const loadCheckout = async (user, priceId) => {
+  const docRef = await db
+    .collection('customers')
+    .doc(user.uid)
+    .collection('checkout_sessions')
+    .add({
+      price: priceId,
+      success_url: window.location.origin,
+      cancel_url: window.location.origin,
+    })
+  docRef.onSnapshot(async (snap) => {
+    const { error, sessionId } = snap.data()
+    if (error) {
+      // Show an error to your customer and
+      // inspect your Cloud Function logs in the Firebase console.
+      alert(`An error occured: ${error.message}`)
+    }
+    if (sessionId) {
+      // We have a session, let's redirect to Checkout
+      // Init Stripe
+      const stripe = await loadStripe('pk_test_51IPOLYJQGixIR89grGM5edCuiONbJWGLiI7KGTRVErJVhLdM3QchjEACY6CUqbbqGTkE1R3fGzyHxLoKJE6pRx9r00lbSbOSIM')
+      stripe.redirectToCheckout({ sessionId })
+    }
+  })
+}
 
 const initializeUser = (userAuth, dispatch) => {
   if (userAuth) {
